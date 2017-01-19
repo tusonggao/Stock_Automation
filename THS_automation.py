@@ -1,0 +1,373 @@
+# -*- coding: utf8 -*-
+
+from __future__ import unicode_literals
+from __future__ import print_function
+
+import os.path
+import sys
+import time
+import collections
+import pandas as pd
+import datetime
+
+try:
+    from pywinauto import application
+except ImportError:
+    pywinauto_path = os.path.abspath(__file__)
+    pywinauto_path = os.path.split(os.path.split(pywinauto_path)[0])[0]
+    sys.path.append(pywinauto_path)
+    from pywinauto import application
+
+import pywinauto
+from pywinauto.timings import Timings
+import win32gui
+from win32.lib import win32con
+
+import win32clipboard as w
+import win32con
+
+import tushare as ts
+
+
+def getClipboardText():
+    w.OpenClipboard()
+    d = w.GetClipboardData(win32con.CF_TEXT)
+    w.CloseClipboard()
+    return d
+
+def setClipboardText(aString):
+    w.OpenClipboard()
+    w.EmptyClipboard()
+    w.SetClipboardData(win32con.CF_TEXT, aString)
+    w.CloseClipboard()
+    
+
+class THS_Automation:
+    def __init__(self, account=None):
+        if account is not None:
+            self.startProcess(account)
+        self.app = pywinauto.Application().Connect(path = "xiadan.exe")
+        self.top_hwnd = win32gui.FindWindow(None, u'网上股票交易系统5.0')
+        self.app[u'网上股票交易系统5.0'].maximize()
+        self.updateTimeDelta = datetime.timedelta(5, 0, 0)
+        self.lastUpdateTime = datetime.datetime(2000, 1, 1)
+        self.slippage = 0.005  # 市价买入和卖出时取0.5%d的滑点，可以自行设置        
+        
+
+    def startProcess(self, account):
+        app = pywinauto.Application().start(u'D:\\同花顺软件\\同花顺\\xiadan.exe')
+        app.Dialog.ComboBox1.Select(account['stockCompany'])
+        app.Dialog.ComboBox3.Edit.SetEditText(account['userId']) 
+        app.Dialog.Edit2.SetEditText(account['password'])
+        time.sleep(0.5)
+        app.Dialog[u'登录'].click()
+        app.Dialog[u'登录'].click()
+        
+        
+    def updateMarketPrices(self):
+        self.newestMarketPrices = ts.get_today_all()
+        self.lastUpdateTime = datetime.datetime.now()           
+        
+    def buyStock_THS(self, stock_id, number, price=0.0):
+        tree = self.app[u'网上股票交易系统5.0'].tree_view
+        tree.get_item(u'\买入[F1]').click()
+        
+        if price==0.0:
+            price = self.getMarketBuyPrice(stock_id)
+            print("the sell price of stock_id %s is %.2f "%(stock_id, price))
+            if price==0.0: # 停牌
+                return
+                                               
+        setText_OK = True
+        if setText_OK:
+            for i in range(3):
+                self.app[u'网上股票交易系统5.0'].Edit1.SetEditText(stock_id)
+                if self.app[u'网上股票交易系统5.0'].Edit1.TextBlock()==stock_id:
+                    break
+                else:
+                    print("i am useful")
+                    self.app[u'网上股票交易系统5.0'].Edit1.SetEditText("")
+            else:
+                setText_OK = False
+                
+        if setText_OK:
+            for i in range(3):
+                self.app[u'网上股票交易系统5.0'].Edit2.SetEditText(str(price))
+                if self.app[u'网上股票交易系统5.0'].Edit2.TextBlock()==str(price):
+                    break
+                else:
+                    print("i am useful")
+                    self.app[u'网上股票交易系统5.0'].Edit2.SetEditText("")
+            else:
+                setText_OK = False
+                
+        if setText_OK:
+            for i in range(3):
+                self.app[u'网上股票交易系统5.0'].Edit3.SetEditText(str(number))
+                if self.app[u'网上股票交易系统5.0'].Edit3.TextBlock()==str(number):
+                    break
+                else:
+                    print("i am useful")
+                    self.app[u'网上股票交易系统5.0'].Edit3.SetEditText("")
+            else:
+                setText_OK = False
+                
+        if setText_OK:
+            self.app[u'网上股票交易系统5.0'][u'买入[S]'].click()
+            print("Buy order sent sucesessfully!!!") 
+        else:
+            print("Buy order sent unsucesessfully!!!")
+        return setText_OK
+        
+    def getMarketBuyPrice(self, stock_id):
+        if (datetime.datetime.now() - self.lastUpdateTime) > self.updateTimeDelta:
+            self.updateMarketPrices()
+        prices = self.newestMarketPrices.ix[self.newestMarketPrices.code==stock_id]
+        print("prices is ", prices)
+        price = prices.iloc[0]['trade']**(1 + self.slippage)      
+        high_price = prices.iloc[0]['high']
+        return min(price, high_price)
+        
+    def getMarketSellPrice(self, stock_id):
+        if (datetime.datetime.now() - self.lastUpdateTime) > self.updateTimeDelta:
+            self.updateMarketPrices()
+        prices = self.newestMarketPrices.ix[self.newestMarketPrices.code==stock_id]
+        price = prices.iloc[0]['trade']**(1 - self.slippage)      
+        low_price = prices.iloc[0]['low']
+        return round(max(price, low_price), 2)
+
+
+    def sellAllPositionsByMarketPrice(self):
+        self.getCurrentPositions()
+        for index, row in self.currentPositons.iterrows():
+            if int(row[u'可用余额'])>0:
+                print("可用余额不为0")
+                self.sellStock_THS(row[u'证券代码'], int(row[u'可用余额']))
+            else:
+                print("可用余额为0")
+            print("sell stock_id: ", row[u'证券代码'], "number: ",  int(row[u'可用余额']))
+    
+    def sellStock_THS(self, stock_id, number, price=0.0):
+        tree = self.app[u'网上股票交易系统5.0'].tree_view
+        tree.get_item(u'\卖出[F1]').click()
+        
+        if price==0.0:
+            price = self.getMarketSellPrice(stock_id)
+            print("the sell price of stock_id %s is %.2f "%(stock_id, price))
+            if price==0.0: # 停牌
+                return
+        
+        setText_OK = True
+
+        if setText_OK:
+            for i in range(3):
+                self.app[u'网上股票交易系统5.0'].Edit1.SetEditText(stock_id)
+                if self.app[u'网上股票交易系统5.0'].Edit1.TextBlock()==stock_id:
+                    break
+                else:
+                    print("i am useful sell 1")
+                    self.app[u'网上股票交易系统5.0'].Edit1.SetEditText("")
+            else:
+                setText_OK = False
+                
+        if setText_OK:
+            for i in range(3):
+                self.app[u'网上股票交易系统5.0'].Edit2.SetEditText(str(price))
+                if self.app[u'网上股票交易系统5.0'].Edit2.TextBlock()==str(price):
+                    break
+                else:
+                    print("i am useful sell 2")
+                    self.app[u'网上股票交易系统5.0'].Edit2.SetEditText("")
+            else:
+                setText_OK = False
+                
+        if setText_OK:
+            for i in range(3):
+                self.app[u'网上股票交易系统5.0'].Edit3.SetEditText(str(number))
+                if self.app[u'网上股票交易系统5.0'].Edit3.TextBlock()==str(number):
+                    break
+                else:
+                    print("i am useful sell 3")
+                    self.app[u'网上股票交易系统5.0'].Edit3.SetEditText("")
+            else:
+                setText_OK = False
+                
+        if setText_OK:
+            self.app[u'网上股票交易系统5.0'][u'卖出[S]'].click()
+            print("Sell order sent sucesessfully!!!")            
+        else:
+            print("the set content is ", self.app[u'网上股票交易系统5.0'].Edit2.TextBlock())
+            print("the price should be ", str(price))
+            print("Sell order sent unsucesessfully!!!")       
+        
+        return setText_OK
+
+    def getAccountValue_THS(self):
+        tree = self.app[u'网上股票交易系统5.0'].tree_view    
+        tree.get_item(u'\查询[F4]\资金股票').click()
+        self.app[u'网上股票交易系统5.0'].TypeKeys("{F5}")
+        time.sleep(0.5)
+        
+        account_value = collections.OrderedDict()
+        account_value[u'资金余额'] = float(self.app[u'网上股票交易系统5.0'].Static4.WindowText())
+        account_value[u'冻结金额'] = float(self.app[u'网上股票交易系统5.0'].Static5.WindowText())
+        account_value[u'可用金额'] = float(self.app[u'网上股票交易系统5.0'].Static6.WindowText())
+        account_value[u'可取金额'] = float(self.app[u'网上股票交易系统5.0'].Static10.WindowText())
+        account_value[u'股票市值'] = float(self.app[u'网上股票交易系统5.0'].Static11.WindowText())
+        account_value[u'总资产'] = float(self.app[u'网上股票交易系统5.0'].Static12.WindowText())
+        account_value[u'持仓盈亏'] = float(self.app[u'网上股票交易系统5.0'].Static17.WindowText())
+        account_value[u'当日盈亏'] = self.app[u'网上股票交易系统5.0'].Static15.WindowText()
+        self.account_value = account_value
+        
+        print("the current account_value is:", self.account_value)
+
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_PAINT, 0, 0)  #刷新界面
+#        hwnd1 = win32gui.GetDlgItem(self.top_hwnd, 0x0000E900)
+#        hwnd2 = win32gui.GetDlgItem(hwnd1, 0x0000E901)
+#        hwnd3 = win32gui.GetDlgItem(hwnd2, 0x000003F7)
+#        print("hwnd3 ", hwnd3)
+#        total_val = win32gui.GetWindowText(hwnd3)
+#        print(u"总资产: ", total_val)
+#        hwnd4 = win32gui.GetDlgItem(hwnd2, 0x000003F8)
+#        available = win32gui.GetWindowText(hwnd4)
+#        print("hwnd4 ", hwnd4)
+#        print(u"资金余额: ", available)
+#        hwnd5 = win32gui.GetDlgItem(hwnd2, 0x000003F6)
+#        available = win32gui.GetWindowText(hwnd5)
+#        print("hwnd4 ", hwnd5)
+#        print(u"股票市值: ", available)
+
+    def getCurrentPositions(self):
+        tree = self.app[u'网上股票交易系统5.0'].tree_view
+        tree.get_item(u'\查询[F4]\资金股票').click() # 可以通过ctrl+c来复制出来
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.TypeKeys("^C")
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.RightClickInput(coords=(800, 500))
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.ClickInput(coords=(830, 565))
+        lines = getClipboardText().decode("gb2312").split('\r\n')
+        titles = lines[0].split('\t')[:-1]
+        positions = []
+        for i in range(1, len(lines)):
+            positions.append(lines[i].split('\t')[:-1])
+        self.currentPositons = pd.DataFrame(positions, columns=titles)
+        print(u"现在持有仓位")
+        print(self.currentPositons)
+        return self.currentPositons
+        
+        
+    def getTodayTransaction(self):   
+        tree = self.app[u'网上股票交易系统5.0'].tree_view
+        tree.get_item(u'\查询[F4]\当日成交').click()
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.TypeKeys('{F5}')
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.set_focus()        
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.TypeKeys("^C")
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.RightClickInput(coords=(800, 500))
+        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.ClickInput(coords=(830, 565))        
+
+        lines = getClipboardText().decode("gb2312").split('\r\n')
+        titles = lines[0].split('\t')[:-1]
+        transcations = []
+        for i in range(1, len(lines)):
+            transcations.append(lines[i].split('\t')[:-1])
+        self.todayTranscations = pd.DataFrame(transcations, columns=titles)
+        
+        print(u"今日成交")
+        print(self.todayTranscations)
+        return self.todayTranscations
+        
+        
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.RightClick()
+#        print(self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.Colums[t]())
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.table.Text()
+#        print(self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.Text())
+
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.set_focus().click_input(button='right')
+#        self.app[u'网上股票交易系统5.0'].PopupMenu.Wait('visible', timeout=15).Menu().GetMenuPath(u'复制111(C)')[0].Click()
+#        self.app.PopupMenu.Wait('visible', timeout=15).Menu().GetMenuPath(u'复制111(C)')[0].Click()
+#        self.app.PopupMenu.GetMenuPath(u'复制(C)')[0].Click()
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.PopupMenu.MenuClick(u'复制')
+#        self.app[u'网上股票交易系统5.0'].Dialog2.PopupMenu.MenuClick(u'复制')
+#        dsk = pywinauto.Desktop(backend='uia')
+#        self.app[u'网上股票交易系统5.0'].Context[u'复制(C)'].click_input()
+#        dsk = pywinauto.Desktop(backend='uia')
+#        dsk.Context[u'复制(C)'].click_input()
+#        dsk[u'网上股票交易系统5.0'].PopupMenu[u'复制(C)'].click_input()
+#        self.app[u'网上股票交易系统5.0'].PopupMenu.MenuClick(u'复制')
+#        self.app[u'网上股票交易系统5.0'].PopupMenu.MenuClick(u'复制')
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.Context[u'复制(C)'].click_input()
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.PopupMenu.GetMenuPath(u'复制(C)')[0].Click()
+#        dsk = pywinauto.Desktop(backend='uia')
+#        dsk.Context[u'复制(C)'].click_input()
+#        ttt = self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.WindowText()
+#        print(ttt)
+#        self.app[u'网上股票交易系统5.0'].PrintControlIdentifiers()
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.ContextMenuSelect(u'复制(C)')
+#        self.app[u'网上股票交易系统5.0'].TypeKeys("^C")
+#        hwnd1 = win32gui.GetDlgItem(self.top_hwnd, 0x0000E900)
+#        hwnd2 = win32gui.GetDlgItem(hwnd1, 0x0000E901)
+#        hwnd3 = win32gui.GetDlgItem(hwnd2, 0x00000417)
+#        hwnd4 = win32gui.GetDlgItem(hwnd3, 0x000000C8)
+#        hwnd5 = win32gui.GetDlgItem(hwnd4, 0x00000417)
+#        win32gui.PostMessage(hwnd5, win32con.WM_COPY, 0, 0)  #刷新界面
+#        win32gui.PostMessage(hwnd5, win32con.WM_KEYDOWN, win32con.VK_CONTROL, 0)  #刷新界面
+#        win32gui.PostMessage(hwnd5, win32con.WM_CHAR, 'C', 0)  #刷新界面
+#        win32gui.PostMessage(hwnd5, win32con.WM_KEYUP, win32con.VK_CONTROL, 0)  #刷新界面
+        
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_COPY, 0, 0)  #刷新界面
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_KEYDOWN, win32con.VK_CONTROL, 0)  #刷新界面
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_CHAR, 'C', 0)  #刷新界面
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_KEYUP, win32con.VK_CONTROL, 0)  #刷新界面
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_KEYUP, win32con.VK_CONTROL, 0)  #刷新界面
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_HOTKEY, 'C', win32con.MOD_CONTROL)  #刷新界面
+#        win32gui.PostMessage(self.top_hwnd, win32con.WM_ACTIVATE, 0, 0)  #刷新界面
+#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.TypeKeys("^C")       
+#        self.app[u'另存为'].Edit.set_edit_text("f:\\working_prog\\table111.xls")
+#        self.app[u'另存为'][u'保存'].click()
+
+#=============================================================================
+#   使用实例
+#=============================================================================
+def demo():
+    account1 = {'stockCompany': u'国泰君安-广州黄埔大道证券营业部', 
+               'userId': '10335207',
+               'password': '*******'}
+    account2 = {'stockCompany': u'模拟炒股', 
+               'userId': 'krazy47',
+               'password': '*****'}
+    auto = THS_Automation()
+#    auto = THS_Automation()
+    auto.getAccountValue_THS()
+#    auto.getCurrentPositions()
+    auto.sellAllPositionsByMarketPrice()
+    
+#    auto.buyStock_THS('000899', 100, 8.77)
+#    auto.buyStock_THS('600548', 100, 8.45)
+#    auto.buyStock_THS('601668', 100, 8.8)
+    
+#    auto.buyStock_THS('000899', 100)
+#    auto.buyStock_THS('600548', 100)
+#    auto.buyStock_THS('601668', 100)
+    time.sleep(2.0)
+#    auto.sellStock_THS('000002', 16.4, 200)    
+
+    for i in range(3):
+        print('get here', i)
+        auto.getCurrentPositions()
+        auto.getTodayTransaction()
+        time.sleep(10.0)
+        
+        
+if __name__ == '__main__':
+    demo()    
+        
+#    import tushare as ts
+#    pd = ts.get_today_all()
+#    pd.to_csv("stocks_price.csv")
+#    win32gui.SendMessage(hld, win32con.WM_KEYDOWN, win32con.VK_F4, 0)
+#    time.sleep(0.5)
+
+#    win32gui.EnumWindows(getWindowTitles, 0)
+#    lt = [t for t in getWindowTitles.titles if t]
+#    lt.sort()
+#    for t in lt:
+#        print(t)
+#        time.sleep(0.03)
