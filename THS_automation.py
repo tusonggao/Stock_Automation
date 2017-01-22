@@ -258,11 +258,6 @@ class THS_Automation:
         print(self.todayTranscations)
         return self.todayTranscations
         
-        
-#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.RightClick()
-#        print(self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.Colums[t]())
-#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.table.Text()
-#        print(self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.Text())
 
 #        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.set_focus().click_input(button='right')
 #        self.app[u'网上股票交易系统5.0'].PopupMenu.Wait('visible', timeout=15).Menu().GetMenuPath(u'复制111(C)')[0].Click()
