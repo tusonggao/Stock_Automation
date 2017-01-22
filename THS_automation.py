@@ -221,22 +221,6 @@ class THS_Automation:
         
         print("the current account_value is:", self.account_value)
 
-#        win32gui.PostMessage(self.top_hwnd, win32con.WM_PAINT, 0, 0)  #刷新界面
-#        hwnd1 = win32gui.GetDlgItem(self.top_hwnd, 0x0000E900)
-#        hwnd2 = win32gui.GetDlgItem(hwnd1, 0x0000E901)
-#        hwnd3 = win32gui.GetDlgItem(hwnd2, 0x000003F7)
-#        print("hwnd3 ", hwnd3)
-#        total_val = win32gui.GetWindowText(hwnd3)
-#        print(u"总资产: ", total_val)
-#        hwnd4 = win32gui.GetDlgItem(hwnd2, 0x000003F8)
-#        available = win32gui.GetWindowText(hwnd4)
-#        print("hwnd4 ", hwnd4)
-#        print(u"资金余额: ", available)
-#        hwnd5 = win32gui.GetDlgItem(hwnd2, 0x000003F6)
-#        available = win32gui.GetWindowText(hwnd5)
-#        print("hwnd4 ", hwnd5)
-#        print(u"股票市值: ", available)
-
     def getCurrentPositions(self):
         tree = self.app[u'网上股票交易系统5.0'].tree_view
         tree.get_item(u'\查询[F4]\资金股票').click() # 可以通过ctrl+c来复制出来
