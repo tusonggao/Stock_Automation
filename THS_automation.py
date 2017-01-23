@@ -259,10 +259,6 @@ class THS_Automation:
         return self.todayTranscations
         
 
-#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.set_focus().click_input(button='right')
-#        self.app[u'网上股票交易系统5.0'].PopupMenu.Wait('visible', timeout=15).Menu().GetMenuPath(u'复制111(C)')[0].Click()
-#        self.app.PopupMenu.Wait('visible', timeout=15).Menu().GetMenuPath(u'复制111(C)')[0].Click()
-#        self.app.PopupMenu.GetMenuPath(u'复制(C)')[0].Click()
 #        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.PopupMenu.MenuClick(u'复制')
 #        self.app[u'网上股票交易系统5.0'].Dialog2.PopupMenu.MenuClick(u'复制')
 #        dsk = pywinauto.Desktop(backend='uia')
