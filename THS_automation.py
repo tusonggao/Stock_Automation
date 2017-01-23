@@ -314,9 +314,7 @@ def demo():
 #    auto.getCurrentPositions()
     auto.sellAllPositionsByMarketPrice()
     
-#    auto.buyStock_THS('000899', 100, 8.77)
-#    auto.buyStock_THS('600548', 100, 8.45)
-#    auto.buyStock_THS('601668', 100, 8.8)
+
     
 #    auto.buyStock_THS('000899', 100)
 #    auto.buyStock_THS('600548', 100)
