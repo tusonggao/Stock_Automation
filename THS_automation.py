@@ -268,7 +268,7 @@ class THS_Automation:
 #        print(ttt)
 #        self.app[u'网上股票交易系统5.0'].PrintControlIdentifiers()
 #        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.ContextMenuSelect(u'复制(C)')
-#        self.app[u'网上股票交易系统5.0'].TypeKeys("^C")
+
 #        hwnd1 = win32gui.GetDlgItem(self.top_hwnd, 0x0000E900)
 #        hwnd2 = win32gui.GetDlgItem(hwnd1, 0x0000E901)
 #        hwnd3 = win32gui.GetDlgItem(hwnd2, 0x00000417)
