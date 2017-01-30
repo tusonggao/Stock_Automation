@@ -261,9 +261,7 @@ class THS_Automation:
 
 
 
-#        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.PopupMenu.GetMenuPath(u'复制(C)')[0].Click()
-#        dsk = pywinauto.Desktop(backend='uia')
-#        dsk.Context[u'复制(C)'].click_input()
+
 #        ttt = self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.WindowText()
 #        print(ttt)
 #        self.app[u'网上股票交易系统5.0'].PrintControlIdentifiers()
