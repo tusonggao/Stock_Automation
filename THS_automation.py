@@ -262,8 +262,7 @@ class THS_Automation:
 
 
 
-#        ttt = self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.WindowText()
-#        print(ttt)
+
 #        self.app[u'网上股票交易系统5.0'].PrintControlIdentifiers()
 #        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.ContextMenuSelect(u'复制(C)')
 
