@@ -264,8 +264,7 @@ class THS_Automation:
 
 
 
-#        hwnd1 = win32gui.GetDlgItem(self.top_hwnd, 0x0000E900)
-#        hwnd2 = win32gui.GetDlgItem(hwnd1, 0x0000E901)
+
 #        hwnd3 = win32gui.GetDlgItem(hwnd2, 0x00000417)
 #        hwnd4 = win32gui.GetDlgItem(hwnd3, 0x000000C8)
 #        hwnd5 = win32gui.GetDlgItem(hwnd4, 0x00000417)
