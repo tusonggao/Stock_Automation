@@ -265,8 +265,7 @@ class THS_Automation:
 
 
 
-#        hwnd3 = win32gui.GetDlgItem(hwnd2, 0x00000417)
-#        hwnd4 = win32gui.GetDlgItem(hwnd3, 0x000000C8)
+
 #        hwnd5 = win32gui.GetDlgItem(hwnd4, 0x00000417)
 #        win32gui.PostMessage(hwnd5, win32con.WM_COPY, 0, 0)  #刷新界面
 #        win32gui.PostMessage(hwnd5, win32con.WM_KEYDOWN, win32con.VK_CONTROL, 0)  #刷新界面
