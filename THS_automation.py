@@ -312,7 +312,7 @@ def demo():
 if __name__ == '__main__':
     demo()    
         
-#    import tushare as ts
+
 #    pd = ts.get_today_all()
 #    pd.to_csv("stocks_price.csv")
 #    win32gui.SendMessage(hld, win32con.WM_KEYDOWN, win32con.VK_F4, 0)
