@@ -261,14 +261,6 @@ class THS_Automation:
 
 
 
-
-
-
-
-
-        
-#        win32gui.PostMessage(self.top_hwnd, win32con.WM_COPY, 0, 0)  #刷新界面
-#        win32gui.PostMessage(self.top_hwnd, win32con.WM_KEYDOWN, win32con.VK_CONTROL, 0)  #刷新界面
 #        win32gui.PostMessage(self.top_hwnd, win32con.WM_CHAR, 'C', 0)  #刷新界面
 #        win32gui.PostMessage(self.top_hwnd, win32con.WM_KEYUP, win32con.VK_CONTROL, 0)  #刷新界面
 #        win32gui.PostMessage(self.top_hwnd, win32con.WM_KEYUP, win32con.VK_CONTROL, 0)  #刷新界面
