@@ -266,7 +266,7 @@ class THS_Automation:
 #        win32gui.PostMessage(self.top_hwnd, win32con.WM_HOTKEY, 'C', win32con.MOD_CONTROL)  #刷新界面
 #        win32gui.PostMessage(self.top_hwnd, win32con.WM_ACTIVATE, 0, 0)  #刷新界面
 #        self.app[u'网上股票交易系统5.0'].CVirtualGridCtrl.TypeKeys("^C")       
-#        self.app[u'另存为'].Edit.set_edit_text("f:\\working_prog\\table111.xls")
+
 #        self.app[u'另存为'][u'保存'].click()
 
 #=============================================================================
