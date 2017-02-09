@@ -261,9 +261,6 @@ class THS_Automation:
 
 
 
-
-
-#        win32gui.PostMessage(self.top_hwnd, win32con.WM_HOTKEY, 'C', win32con.MOD_CONTROL)  #刷新界面
 #        self.app[u'另存为'][u'保存'].click()
 
 #=============================================================================
