@@ -281,7 +281,7 @@ def demo():
     
 
     
-#    auto.buyStock_THS('000899', 100)
+
 #    auto.buyStock_THS('600548', 100)
 #    auto.buyStock_THS('601668', 100)
     time.sleep(2.0)
