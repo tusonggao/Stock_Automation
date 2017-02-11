@@ -298,7 +298,7 @@ if __name__ == '__main__':
     demo()    
         
 
-#    pd = ts.get_today_all()
+
 #    pd.to_csv("stocks_price.csv")
 #    win32gui.SendMessage(hld, win32con.WM_KEYDOWN, win32con.VK_F4, 0)
 #    time.sleep(0.5)
