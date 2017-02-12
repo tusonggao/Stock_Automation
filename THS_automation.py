@@ -299,7 +299,6 @@ if __name__ == '__main__':
 
 
 #    pd.to_csv("stocks_price.csv")
-#    win32gui.SendMessage(hld, win32con.WM_KEYDOWN, win32con.VK_F4, 0)
 #    time.sleep(0.5)
 
 #    win32gui.EnumWindows(getWindowTitles, 0)
