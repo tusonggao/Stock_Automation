@@ -277,13 +277,8 @@ def demo():
 #    auto.getCurrentPositions()
     auto.sellAllPositionsByMarketPrice()
     
-
-    
-
-
-
     time.sleep(2.0)
-#    auto.sellStock_THS('000002', 16.4, 200)    
+
 
     for i in range(3):
         print('get here', i)
