@@ -293,7 +293,7 @@ if __name__ == '__main__':
 
 
 #    pd.to_csv("stocks_price.csv")
-#    time.sleep(0.5)
+
 
 #    win32gui.EnumWindows(getWindowTitles, 0)
 #    lt = [t for t in getWindowTitles.titles if t]
