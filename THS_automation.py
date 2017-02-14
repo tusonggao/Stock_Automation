@@ -272,7 +272,7 @@ def demo():
                'userId': 'krazy47',
                'password': '*****'}
     auto = THS_Automation()
-#    auto = THS_Automation()
+
     auto.getAccountValue_THS()
 #    auto.getCurrentPositions()
     auto.sellAllPositionsByMarketPrice()
