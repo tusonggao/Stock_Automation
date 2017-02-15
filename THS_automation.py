@@ -202,6 +202,7 @@ class THS_Automation:
         
         return setText_OK
 
+    
     def getAccountValue_THS(self):
         tree = self.app[u'网上股票交易系统5.0'].tree_view    
         tree.get_item(u'\查询[F4]\资金股票').click()
