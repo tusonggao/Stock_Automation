@@ -275,7 +275,7 @@ def demo():
     auto = THS_Automation()
 
     auto.getAccountValue_THS()
-#    auto.getCurrentPositions()
+
     auto.sellAllPositionsByMarketPrice()
     
     time.sleep(2.0)
