@@ -296,7 +296,7 @@ if __name__ == '__main__':
 
 
 
-#    win32gui.EnumWindows(getWindowTitles, 0)
+
 #    lt = [t for t in getWindowTitles.titles if t]
 #    lt.sort()
 #    for t in lt:
