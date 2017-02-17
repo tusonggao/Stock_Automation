@@ -297,7 +297,7 @@ if __name__ == '__main__':
 
 
 
-#    lt = [t for t in getWindowTitles.titles if t]
+
 #    lt.sort()
 #    for t in lt:
 #        print(t)
