@@ -299,6 +299,6 @@ if __name__ == '__main__':
 
 
 
-#    for t in lt:
+
 #        print(t)
 #        time.sleep(0.03)
