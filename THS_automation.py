@@ -298,7 +298,7 @@ if __name__ == '__main__':
 
 
 
-#    lt.sort()
+
 #    for t in lt:
 #        print(t)
 #        time.sleep(0.03)
