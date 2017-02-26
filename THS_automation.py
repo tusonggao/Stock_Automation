@@ -255,7 +255,7 @@ class THS_Automation:
             transcations.append(lines[i].split('\t')[:-1])
         self.todayTranscations = pd.DataFrame(transcations, columns=titles)
         
-        print(u"今日成交")
+        # print(u"今日成交")
         print(self.todayTranscations)
         return self.todayTranscations
         
