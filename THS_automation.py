@@ -285,7 +285,7 @@ def demo():
         print('get here', i)
         auto.getCurrentPositions()
         auto.getTodayTransaction()
-        time.sleep(10.0)
+        # time.sleep(10.0)
         
         
 if __name__ == '__main__':
