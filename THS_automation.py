@@ -46,7 +46,7 @@ class THS_Automation:
     def __init__(self, account=None):
         if account is not None:
             self.startProcess(account)
-        self.app = pywinauto.Application().Connect(path = "xiadan.exe")
+        # self.app = pywinauto.Application().Connect(path = "xiadan.exe")
         self.top_hwnd = win32gui.FindWindow(None, u'网上股票交易系统5.0')
         self.app[u'网上股票交易系统5.0'].maximize()
         self.updateTimeDelta = datetime.timedelta(5, 0, 0)
