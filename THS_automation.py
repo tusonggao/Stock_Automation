@@ -11,7 +11,7 @@ import pandas as pd
 import datetime
 
 try:
-    #from pywinauto import application
+    from pywinauto import application
 except ImportError:
     pywinauto_path = os.path.abspath(__file__)
     pywinauto_path = os.path.split(os.path.split(pywinauto_path)[0])[0]
