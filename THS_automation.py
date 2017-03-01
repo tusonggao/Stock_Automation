@@ -23,8 +23,8 @@ from pywinauto.timings import Timings
 import win32gui
 from win32.lib import win32con
 
-import win32clipboard as w
-import win32con
+# import win32clipboard as w
+# import win32con
 
 import tushare as ts
 
