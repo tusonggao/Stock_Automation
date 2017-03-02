@@ -34,6 +34,7 @@ def getClipboardText():
     w.OpenClipboard()
     d = w.GetClipboardData(win32con.CF_TEXT)
     w.CloseClipboard()
+    
     return d
 
 def setClipboardText(aString):
