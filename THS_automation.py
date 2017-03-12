@@ -33,7 +33,7 @@ from win32.lib import win32con
 
 import tushare as ts
 
-
+###############################################################################
 def getClipboardText():
     w.OpenClipboard()
     d = w.GetClipboardData(win32con.CF_TEXT)
