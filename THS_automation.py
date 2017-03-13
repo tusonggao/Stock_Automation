@@ -122,4 +122,4 @@ class THS_Automation:
                 
         if setText_OK:
             self.app[u'网上股票交易系统5.0'][u'买入[S]'].click()
-            print("Buy or
+
