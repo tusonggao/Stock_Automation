@@ -69,6 +69,8 @@ class THS_Automation:
         app.Dialog[u'登录'].click()
         
         
+        
+        
     def updateMarketPrices(self):
         self.newestMarketPrices = ts.get_today_all()
         self.lastUpdateTime = datetime.datetime.now()           
