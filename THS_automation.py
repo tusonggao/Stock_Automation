@@ -43,6 +43,7 @@ def setClipboardText(aString):
     w.EmptyClipboard()
     w.SetClipboardData(win32con.CF_TEXT, aString)
     w.CloseClipboard()
+
     
 
 class THS_Automation:
