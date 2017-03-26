@@ -36,7 +36,7 @@ def getClipboardText():
     w.CloseClipboard()
     
     return d
-######################################################################################
+
 def setClipboardText(aString):
     w.OpenClipboard()
     w.EmptyClipboard()
