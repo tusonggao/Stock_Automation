@@ -45,7 +45,7 @@ def setClipboardText(aString):
     w.SetClipboardData(win32con.CF_TEXT, aString)
     w.CloseClipboard()
 
-    
+###################################################################333
 
 class THS_Automation:
     def __init__(self, account=None):
