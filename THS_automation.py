@@ -124,4 +124,4 @@ class THS_Automation:
             self.app[u'网上股票交易系统5.0'][u'买入[S]'].click()
             
             
- 
+  
