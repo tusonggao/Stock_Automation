@@ -77,6 +77,8 @@ class THS_Automation:
         self.newestMarketPrices = ts.get_today_all()
         self.lastUpdateTime = datetime.datetime.now()           
         
+        ##############################################
+        
     def buyStock_THS(self, stock_id, number, price=0.0):
         tree = self.app[u'网上股票交易系统5.0'].tree_view
         tree.get_item(u'\买入[F1]').click()
