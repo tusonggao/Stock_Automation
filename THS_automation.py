@@ -12,8 +12,6 @@ import collections
 import pandas as pd
 import datetime
 
-
-
 try:
 
     from pywinauto import application
