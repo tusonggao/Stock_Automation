@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 
-
+##############################################################
 
 import os.path
 import sys
@@ -50,7 +50,7 @@ def setClipboardText(aString):
     w.SetClipboardData(win32con.CF_TEXT, aString)
     w.CloseClipboard()
 
-
+################################################################
 
 class THS_Automation:
     def __init__(self, account=None):
