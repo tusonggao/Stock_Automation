@@ -111,6 +111,7 @@ class THS_Automation:
             else:
                 setText_OK = False
                 
+                
         if setText_OK:
             for i in range(3):
                 self.app[u'网上股票交易系统5.0'].Edit2.SetEditText(str(price))
