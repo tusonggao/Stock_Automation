@@ -3,8 +3,6 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-
-
 import os.path
 import sys
 import time
@@ -13,7 +11,6 @@ import pandas as pd
 import datetime
 
 
-#############################################################################33
 ###############################################################################
 ##I am doing this to remind myself not forgeting practicing coding EVERY DAY!!! 
 ###I am doing this to remind myself not forgeting practicing coding EVERY DAY!!! 
